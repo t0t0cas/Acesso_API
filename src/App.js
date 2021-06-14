@@ -1,40 +1,42 @@
-//****************************/
-//App.js
-//****************************/
+// *****************************************
+// App.js
+// *****************************************
 
-import React from 'react'
-import 'bootstrap/dist/css/bootstrap.min.css'
+import React from 'react';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
-//import compentes 
-import Tabela from './Tabela'
+// importar componentes
+import Tabela from './Tabela';
 
 /**
- * Função que irá ler os dados da API
+ * função que irá ler os dados (fotografias) da API
  */
-async function getFotos(){
-  //ler os dados da api
-  let recivefotos = await fetch("/api/FotografiaAPI");
-  
-  if(!recivefotos.ok){
-    //não foi recebido o código 200 do HTTP
-    console.error("Não foi possível ler os dados da API. Código: " + recivefotos.status);
+async function getFotos() {
+
+  // ler os dados da API
+  // https://create-react-app.dev/docs/proxying-api-requests-in-development/
+  let resposta = await fetch("api/FotografiasAPI");
+
+  if (!resposta.ok) {
+    // não foi recebido o código 200 do HTTP
+    console.error("Não conseguimos ler os dados da API. Código: " + resposta.status);
   }
-  return await recivefotos.json();
+  return await resposta.json();
 }
+
+
 
 /**
  * Componente principal do meu projeto
  */
-class App extends React.Component{
-
+class App extends React.Component {
   /**
    * Construtor da classe -> tem sempre este nome
-   * @param {} props 
    */
-  constructor(props){
-    super(props); // <--- esta é SEMPRE a primeira instrução
+  constructor(props) {
+    super(props); // <--- esta É SEMPRE a primeira instrução
 
-    this.state ={
+    this.state = {
       /**
        * array que irá conter os dados das Fotos, vindas da API
        */
@@ -44,42 +46,43 @@ class App extends React.Component{
 
   /**
    * Quando o objeto é criado, executa o código aqui escrito
-   * Vamos usar este método para carregar os dados da API
+   * Vamos usá-lo para carregar os dados da API
    */
-  componentDidMount(){
-    this.loadFotos();
+  componentDidMount() {
+    this.LoadFotos();
   }
 
   /**
    * Carrega as fotos da API e adiciona-as ao array 'fotos'
    */
-  async loadFotos(){
-    /**
-     * Taferas:
-     * - 1. Ler os dados da API (fetch)
-     * - 2. atualizar os dados na var. state
+  async LoadFotos() {
+    /* Tarefas:
+     *   1. Ler os dados da API (fetch)
+         2. atualizar os dados na var. state
      */
     try {
       // 1.
-      let fotosAPI = await getFotos();
+      let fotosVindosDaAPI = await getFotos();
 
-      //2.
+      // 2.
+      // esta não é a forma correta: this.state.fotos = fotosVindosDaAPI;
       this.setState({
-        fotos:fotosAPI
+        fotos: fotosVindosDaAPI
       });
-    }catch (erro){ 
-      console.error("Erro na leitura dos dados da API", erro);
+    } catch (erro) {
+      console.error("Erro na leitura das fotos da API", erro);
     }
   }
 
-  render(){
-    const{fotos}=this.state;
+
+  render() {
+    const { fotos } = this.state;
     return (
-    <div className="container">
-      {/*este componente - Tabela - irá apresentar os dados das 'fotos' no ecrã 
-         as 'fotos' devem ser lidas na API */}
-      <Tabela dadosFotos={fotos} />
-    </div>);
+      <div className="container">
+        {/* este componente - Tabela - irá apresentar os dados das 'fotos' no ecrã
+            as 'fotos' devem ser lidas na API */}
+        <Tabela dadosFotos={fotos} />
+      </div>)
   }
 
 }
